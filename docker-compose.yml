@@ -44,10 +44,12 @@ ui:
 couchbase:
   image: dalekurt/couchbase-server
   ports:
-    - "8091"
+    - "8091:8091"
     - "8092"
     - "11210"
     - "11211"
+  volumes:
+    - /:/hostMount
 mystuff:
   build: mystuff
   ports:
@@ -57,5 +59,6 @@ mystuff:
     - kafka:kafka
   volumes:
     - .:/opt/app
+    - /:/testmystuff
   stdin_open: true
   tty: true
