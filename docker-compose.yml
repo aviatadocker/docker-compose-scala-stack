@@ -52,13 +52,18 @@ couchbase:
     - /:/hostMount
 mystuff:
   build: mystuff
+  command: sbt run
   ports:
     - "9000:9000"
+    - "9999:9999"
   links:
     - couchbase:couchbase
     - kafka:kafka
   volumes:
-    - .:/opt/app
+    - ~:/opt/app
     - /:/testmystuff
+    - ~/.m2:/root/.m2
+    - ~/.sbt:/root/.sbt
+    - ~/.ivy2:/root/.ivy2
   stdin_open: true
   tty: true
