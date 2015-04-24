@@ -50,6 +50,7 @@ couchbase:
     - "11211"
   volumes:
     - /:/hostMount
+    - ~/couchbase/export-dev/:/app/backup
 #mystuff:
 #  build: mystuff
 #  ports:
