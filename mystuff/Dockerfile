@@ -1,3 +1,4 @@
+#FROM aviata/scala
 FROM dalekurt/scala
 MAINTAINER Dale-Kurt Murray "dalekurt.murray@gmail.com"
 
@@ -7,7 +8,8 @@ RUN mkdir /opt/app
 #ADD ./code /app
 #RUN mvn install
 
-WORKDIR /opt/app/mystuff/mystuff-play-scala-webapp
+#WORKDIR /opt/app/mystuff/mystuff-play-scala-webapp
+WORKDIR /opt/app/mystuff/
 #RUN sbt run
 
 EXPOSE 9000

@@ -1,11 +1,11 @@
 zookeeper:
-  image: dalekurt/zookeeper
+  image: aviata/zookeeper
   name: zookeeper
   ports:
     - "2181"
     - "22"
 kafka:
-  image: dalekurt/kafka
+  image: aviata/kafka
   name: kafka
   ports:
     - "9092"
@@ -16,7 +16,7 @@ kafka:
   volumes:
     - /var/run/docker.sock:/var/run/docker.sock
 nimbus:
-  image: dalekurt/storm-nimbus
+  image: aviata/storm-nimbus-2
   ports:
     - "3773"
     - "3772"
@@ -25,7 +25,7 @@ nimbus:
   links:
     - zookeeper:zookeeper
 supervisor:
-  image: dalekurt/storm-supervisor
+  image: aviata/storm-supervisor
   ports:
     - "8000"
     - "22"
@@ -34,7 +34,7 @@ supervisor:
     - zookeeper:zk
     - couchbase:couchbase
 ui:
-  image: dalekurt/storm-ui
+  image: aviata/storm-ui
   ports:
     - "8080:8080"
     - "22"
@@ -42,7 +42,7 @@ ui:
     - nimbus:nimbus
     - zookeeper:zookeeper
 couchbase:
-  image: dalekurt/couchbase-server
+  image: aviata/couchbase-server
   ports:
     - "8091:8091"
     - "8092"
@@ -50,19 +50,30 @@ couchbase:
     - "11211"
   volumes:
     - /:/hostMount
-#mystuff:
-#  build: mystuff
-#  ports:
-#    - "9000:9000"
-#    - "9999:9999"
-#  links:
-#    - couchbase:couchbase
-#    - kafka:kafka
-#  volumes:
-#    - ~:/opt/app
-#    - /:/testmystuff
-#    - ~/.m2:/root/.m2
-#    - ~/.sbt:/root/.sbt
-#    - ~/.ivy2:/root/.ivy2
-#  stdin_open: true
-#  tty: true
+    - ~/couchbase/export-dev/:/app/backup
+mystuff:
+  build: mystuff
+  working_dir: /opt/app/mystuff/
+  command: sbt "project webApp" run 
+  ports:
+    - "9000:9000"
+    - "9999:9999"
+  links:
+    - couchbase:couchbase
+    - kafka:kafka
+  volumes:
+    - ~:/opt/app
+    - /:/testmystuff
+    - ~/.m2:/root/.m2
+    - ~/.sbt:/root/.sbt
+    - ~/.ivy2:/root/.ivy2
+  stdin_open: true
+  tty: true
+mystuffweb:
+  image: aviata/nginx-mystuff
+  ports:
+    - "80:80"
+  links:
+    - mystuff:mystuff
+  volumes:
+    - ~/mystuff-web/bin:/var/www/html
