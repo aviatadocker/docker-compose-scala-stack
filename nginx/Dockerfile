@@ -1,5 +1,6 @@
 # Pull base image.
-FROM ubuntu:14.04
+#FROM ubuntu:14.04
+FROM stackbrew/ubuntu:14.04
 
 # Install Nginx.
 RUN \
