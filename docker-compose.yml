@@ -52,7 +52,7 @@ couchbase:
     - /:/hostMount
     - ~/couchbase/export-dev/:/app/backup
 mystuff:
-  image: aviata/scala
+  image: aviata/scala-2
   working_dir: /opt/app/mystuff/
   command: sbt -jvm-debug 9999 publish-local "project webApp" run 
   ports:
