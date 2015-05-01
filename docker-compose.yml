@@ -70,10 +70,10 @@ mystuff:
   stdin_open: true
   tty: true
 mystuffweb:
-  image: aviata/nginx-mystuff
+  build: nginx
   ports:
     - "80:80"
   links:
     - mystuff:mystuff
   volumes:
-    - ~/mystuff-web/bin:/var/www/html
+    - ~/mystuff-web/bin:/usr/share/nginx/html/
