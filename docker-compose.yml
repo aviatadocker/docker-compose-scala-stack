@@ -24,6 +24,9 @@ nimbus:
     - "22"
   links:
     - zookeeper:zookeeper
+# The target jar filename is mystuff-discom_2.10.jar
+  volumes:
+    - ~/.ivy2/local/com.aviata.mystuff/mystuff-discom_2.10/1.14/jars/:/root/topology/
 supervisor:
   image: aviata/storm-supervisor
   ports:
