@@ -34,7 +34,7 @@ supervisor:
     - "22"
   links:
     - nimbus:nimbus
-    - zookeeper:zk
+    - zookeeper:zookeeper
     - couchbase:couchbase
 ui:
   image: aviata/storm-ui
@@ -64,6 +64,7 @@ mystuff:
   links:
     - couchbase:couchbase
     - kafka:kafka
+    - zookeeper:zookeeper
   volumes:
     - ~:/opt/app
     - /:/testmystuff
