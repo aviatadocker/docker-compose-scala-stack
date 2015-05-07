@@ -26,7 +26,9 @@ nimbus:
     - zookeeper:zookeeper
 # The target jar filename is mystuff-discom_2.10.jar
   volumes:
-    - ~/.ivy2/local/com.aviata.mystuff/mystuff-discom_2.10/1.14/jars/:/root/topology/
+#    - ~/.ivy2/local/com.aviata.mystuff/mystuff-discom_2.10/1.14/jars/:/root/topology/
+    - ~/storm-jars/:/root/topology/
+    - ~/storm-jars/lib/all-jars/:/opt/apache-storm-0.9.4/lib/
 supervisor:
   image: aviata/storm-supervisor
   ports:
@@ -36,6 +38,8 @@ supervisor:
     - nimbus:nimbus
     - zookeeper:zookeeper
     - couchbase:couchbase
+  volumes:
+    - ~/storm-jars/lib/all-jars/:/opt/apache-storm-0.9.4/lib/
 ui:
   image: aviata/storm-ui
   ports:
