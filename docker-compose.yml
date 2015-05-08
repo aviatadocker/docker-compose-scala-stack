@@ -61,7 +61,7 @@ couchbase:
 mystuff:
   image: aviata/scala-2
   working_dir: /opt/app/mystuff/
-  command: sbt -jvm-debug 9999 publish-local "project webApp" run 
+  command: sbt -jvm-debug 9999 "project webApp" run 
   ports:
     - "9000:9000"
     - "9999:9999"
