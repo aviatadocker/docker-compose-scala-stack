@@ -4,17 +4,6 @@ zookeeper:
   ports:
     - "2181"
     - "22"
-kafka:
-  image: aviata/kafka
-  name: kafka
-  ports:
-    - "9092"
-  links:
-    - zookeeper:zookeeper
-  environment:
-    KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
 nimbus:
   image: aviata/storm-nimbus-2
   ports:
@@ -23,6 +12,7 @@ nimbus:
     - "6627"
     - "22"
   links:
+    - kafka:kafka
     - zookeeper:zookeeper
 # The target jar filename is mystuff-discom_2.10.jar
   volumes:
@@ -35,6 +25,7 @@ supervisor:
     - "8000"
     - "22"
   links:
+    - kafka:kafka
     - nimbus:nimbus
     - zookeeper:zookeeper
     - couchbase:couchbase
@@ -48,6 +39,18 @@ ui:
   links:
     - nimbus:nimbus
     - zookeeper:zookeeper
+kafka:
+  image: aviata/kafka
+  name: kafka
+  ports:
+    - "9092"
+  links:
+    - zookeeper:zookeeper
+  environment:
+    KAFKA_ADVERTISED_HOST_NAME: kafka
+#    KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
+  volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
 couchbase:
   image: aviata/couchbase-server
   ports:
@@ -56,18 +59,23 @@ couchbase:
     - "11210"
     - "11211"
   volumes:
+# Debugging and maintenance mount.
     - /:/hostMount
+# Use this for importing the database.  An *automatic import* is done wit this: do NOT use for QA or PROD!
     - ~/couchbase/export-dev/:/app/backup
 mystuff:
   image: aviata/scala-2
   working_dir: /opt/app/mystuff/
+# use 
+#  sbt "project webApp" start 
+# for PROD
   command: sbt -jvm-debug 9999 "project webApp" run 
   ports:
     - "9000:9000"
     - "9999:9999"
   links:
-    - couchbase:couchbase
     - kafka:kafka
+    - couchbase:couchbase
     - zookeeper:zookeeper
   volumes:
     - ~:/opt/app
@@ -78,7 +86,8 @@ mystuff:
   stdin_open: true
   tty: true
 mystuffweb:
-  build: ./nginx
+#  build: ./nginx
+  image: aviata/nginx-mystuff
   ports:
     - "80:80"
   links:
