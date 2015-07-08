@@ -1,56 +1,56 @@
-zookeeper:
-  image: aviata/zookeeper
-  name: zookeeper
-  ports:
-    - "2181"
-    - "22"
-nimbus:
-  image: aviata/storm-nimbus-2
-  ports:
-    - "3773"
-    - "3772"
-    - "6627"
-    - "22"
-  links:
-    - kafka:kafka
-    - zookeeper:zookeeper
-# The target jar filename is mystuff-discom_2.10.jar
-  volumes:
-#    - ~/.ivy2/local/com.aviata.mystuff/mystuff-discom_2.10/1.14/jars/:/root/topology/
-    - ~/storm-jars/:/root/topology/
-    - ~/storm-jars/lib/all-jars/:/opt/apache-storm-0.9.4/lib/
-supervisor:
-  image: aviata/storm-supervisor
-  ports:
-    - "8000"
-    - "22"
-  links:
-    - kafka:kafka
-    - nimbus:nimbus
-    - zookeeper:zookeeper
-    - couchbase:couchbase
-  volumes:
-    - ~/storm-jars/lib/all-jars/:/opt/apache-storm-0.9.4/lib/
+#zookeeper:
+#  image: aviata/zookeeper
+#  name: zookeeper
+#  ports:
+#    - "2181"
+#    - "22"
+#nimbus:
+#  image: aviata/storm-nimbus-2
+#  ports:
+#    - "3773"
+#    - "3772"
+#    - "6627"
+#    - "22"
+#  links:
+#    - kafka:kafka
+#    - zookeeper:zookeeper
+## The target jar filename is mystuff-discom_2.10.jar
+#  volumes:
+##    - ~/.ivy2/local/com.aviata.mystuff/mystuff-discom_2.10/1.14/jars/:/root/topology/
+#    - ~/storm-jars/:/root/topology/
+#    - ~/storm-jars/lib/all-jars/:/opt/apache-storm-0.9.4/lib/
+#supervisor:
+#  image: aviata/storm-supervisor
+#  ports:
+#    - "8000"
+#    - "22"
+#  links:
+#    - couchbase:couchbase
+#    - kafka:kafka
+#    - nimbus:nimbus
+#    - zookeeper:zookeeper
+#  volumes:
+#    - ~/storm-jars/lib/all-jars/:/opt/apache-storm-0.9.4/lib/
 ui:
   image: aviata/storm-ui
   ports:
     - "8080:8080"
     - "22"
-  links:
-    - nimbus:nimbus
-    - zookeeper:zookeeper
-kafka:
-  image: aviata/kafka
-  name: kafka
-  ports:
-    - "9092"
-  links:
-    - zookeeper:zookeeper
-  environment:
-    KAFKA_ADVERTISED_HOST_NAME: kafka
-#    KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
-  volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+#  links:
+#    - nimbus:nimbus
+#    - zookeeper:zookeeper
+#kafka:
+#  image: aviata/kafka
+#  name: kafka
+#  ports:
+#    - "9092"
+#  links:
+#    - zookeeper:zookeeper
+#  environment:
+#    KAFKA_ADVERTISED_HOST_NAME: kafka
+##    KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
+#  volumes:
+#    - /var/run/docker.sock:/var/run/docker.sock
 couchbase:
   image: aviata/couchbase-server
   ports:
@@ -69,14 +69,14 @@ mystuff:
 # use 
 #  sbt "project webApp" start 
 # for PROD
-  command: sbt -jvm-debug 9999 "project webApp" run 
+  command: sbt -jvm-debug 9999 "project webApp" run
   ports:
     - "9000:9000"
     - "9999:9999"
   links:
-    - kafka:kafka
     - couchbase:couchbase
-    - zookeeper:zookeeper
+#    - kafka:kafka
+#    - zookeeper:zookeeper
   volumes:
     - ~:/opt/app
     - /:/testmystuff
