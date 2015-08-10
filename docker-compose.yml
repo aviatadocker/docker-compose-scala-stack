@@ -31,11 +31,11 @@
 #    - zookeeper:zookeeper
 #  volumes:
 #    - ~/storm-jars/lib/all-jars/:/opt/apache-storm-0.9.4/lib/
-ui:
-  image: aviata/storm-ui
-  ports:
-    - "8080:8080"
-    - "22"
+#ui:
+#  image: aviata/storm-ui
+#  ports:
+#    - "8080:8080"
+#    - "22"
 #  links:
 #    - nimbus:nimbus
 #    - zookeeper:zookeeper
@@ -51,8 +51,17 @@ ui:
 ##    KAFKA_ADVERTISED_HOST_NAME: 192.168.99.100
 #  volumes:
 #    - /var/run/docker.sock:/var/run/docker.sock
+elasticsearch:
+  image: test/elasticsearch
+  #create replication point
+  ports:
+    - "9200:9200"
+    - "9300:9300"
+    - "9091:9091"
 couchbase:
   image: aviata/couchbase-server
+  links:
+    - elasticsearch:elasticsearch
   ports:
     - "8091:8091"
     - "8092"
@@ -65,7 +74,7 @@ couchbase:
     - ~/couchbase/export-dev/:/app/backup
 mystuff:
   image: aviata/scala-2
-  working_dir: /opt/app/mystuff/
+  working_dir: /opt/app
 # use 
 #  sbt "project webApp" start 
 # for PROD
@@ -75,10 +84,11 @@ mystuff:
     - "9999:9999"
   links:
     - couchbase:couchbase
+    - elasticsearch:elasticsearch
 #    - kafka:kafka
 #    - zookeeper:zookeeper
   volumes:
-    - ~:/opt/app
+    - ~/mystuff:/opt/app
     - /:/testmystuff
     - ~/.m2:/root/.m2
     - ~/.sbt:/root/.sbt
@@ -93,4 +103,4 @@ mystuffweb:
   links:
     - mystuff:mystuff
   volumes:
-    - ~/mystuff-web/bin:/usr/share/nginx/html/
+    - ~/mystuff/mystuff-web/bin:/usr/share/nginx/html/
